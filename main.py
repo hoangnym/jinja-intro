@@ -1,7 +1,9 @@
 from flask import Flask, render_template
+from post import Post
 import requests
 
-all_posts = requests.get("https://api.npoint.io/706ae5b51a7218849686").json()
+posts = requests.get("https://api.npoint.io/706ae5b51a7218849686").json()
+post_objects = [Post(post["id"], post["title"], post["subtitle"], post["body"]) for post in posts]
 
 app = Flask(__name__)
 
@@ -10,7 +12,7 @@ app = Flask(__name__)
 def home():
     return render_template(
         "index.html",
-        blog=all_posts
+        blog=post_objects
     )
 
 
@@ -19,7 +21,7 @@ def get_blog(num):
     return render_template(
         "post.html",
         num=num,
-        blog=all_posts[int(num)]
+        blog=post_objects[int(num)]
     )
 
 
